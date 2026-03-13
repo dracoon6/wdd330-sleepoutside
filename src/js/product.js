@@ -1,3 +1,5 @@
+ dk--individual1
+
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 import ProductData from "./ProductData.mjs";
 
@@ -10,6 +12,7 @@ function addProductToCart(product) {
   cart.push(product);
   setLocalStorage("so-cart", cart);
 }
+
 // add to cart button event handler
 async function addToCartHandler(e) {
   const product = await dataSource.findProductById(e.target.dataset.id);
