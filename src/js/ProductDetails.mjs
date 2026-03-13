@@ -17,7 +17,6 @@ export default class ProductDetails {
 
   addProductToCart() {
     let cartItems = getLocalStorage("so-cart");
-    // if cartItems is not an array, initialize it as an empty array
     if (!Array.isArray(cartItems)) {
       cartItems = [];
     }

@@ -33,7 +33,6 @@ function cartItemTemplate(item, index) {
 
 function removeFromCart(itemIndex) {
   const cartItems = getLocalStorage("so-cart") || [];
-  // remove the item at the specified index
   cartItems.splice(itemIndex, 1);
   setLocalStorage("so-cart", cartItems);
   renderCartContents();
