@@ -7,3 +7,15 @@ const dataSource = new ProductData("tents");
 
 const product = new ProductDetails(productId, dataSource);
 product.init();
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem("so-cart")) || [];
+  const count = cart.length;
+
+  const cartCount = document.querySelector(".cart-count");
+  if (cartCount) {
+    cartCount.textContent = count;
+  }
+}
+
+updateCartCount();
