@@ -22,6 +22,14 @@ export default class ProductDetails {
     }
     cartItems.push(this.product);
     setLocalStorage("so-cart", cartItems);
+
+    const cartCount = document.querySelector(".cart-count");
+    if (cartCount) {
+      cartCount.textContent = cartItems.length;
+    } else {
+      console.warn("Cart count element not found");
+    }
+    updateCartCount();
   }
 
   renderProductDetails() {
