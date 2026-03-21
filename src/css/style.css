@@ -168,6 +168,23 @@ button {
   padding: 1rem;
 }
 
+.categories {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.categories a {
+  text-decoration: none;
+  color: var(--dark-grey);
+  text-align: center;
+}
+
+.categories img {
+  max-width: 200px;
+}
+
 .product-list {
   display: flex;
   flex-flow: row wrap;
