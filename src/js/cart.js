@@ -1,11 +1,6 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, loadHeaderFooter } from "./utils.mjs";
 
-const cart = JSON.parse(localStorage.getItem("so-cart")) || [];
-const cartCount = document.querySelector(".cart-count");
-
-if (cartCount) {
-  cartCount.textContent = cart.length;
-}
+loadHeaderFooter();
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
@@ -43,11 +38,6 @@ function removeFromCart(itemIndex) {
   cartItems.splice(itemIndex, 1);
   setLocalStorage("so-cart", cartItems);
   renderCartContents();
-
-  const cartCount = document.querySelector(".cart-count");
-  if (cartCount) {
-    cartCount.textContent = cartItems.length;
-  } 
 }
 
 document.querySelector(".product-list").addEventListener("click", (e) => {
