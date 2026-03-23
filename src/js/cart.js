@@ -7,12 +7,27 @@ const listElement = qs(".product-list");
 const cart = new ShoppingCart(listElement);
 cart.init();
 
+function updateCartTotal() {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const cartTotal = document.querySelector(".cart-total");
+  const cartFooter = document.querySelector(".cart-footer");
+
+  if (cartItems.length > 0) {
+    const total = cartItems.reduce((acc, item) => acc + item.FinalPrice, 0);
+    if (cartTotal) cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
+    if (cartFooter) cartFooter.classList.remove("hide");
+  } else {
+    if (cartFooter) cartFooter.classList.add("hide");
+  }
+}
+
 function removeFromCart(itemIndex) {
   const cartItems = getLocalStorage("so-cart") || [];
   cartItems.splice(itemIndex, 1);
   setLocalStorage("so-cart", cartItems);
 
   cart.init();
+  updateCartTotal();
 }
 
 listElement.addEventListener("click", (e) => {
@@ -20,3 +35,5 @@ listElement.addEventListener("click", (e) => {
     removeFromCart(e.target.dataset.id);
   }
 });
+
+updateCartTotal();

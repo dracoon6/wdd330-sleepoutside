@@ -116,6 +116,10 @@ button {
 
 /* End utility classes */
 
+.hide {
+  display: none;
+}
+
 /* Cart icon styles */
 .cart {
   padding-top: 1em;
@@ -166,6 +170,23 @@ button {
 .products {
   margin-top: 2rem;
   padding: 1rem;
+}
+
+.categories {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.categories a {
+  text-decoration: none;
+  color: var(--dark-grey);
+  text-align: center;
+}
+
+.categories img {
+  max-width: 200px;
 }
 
 .product-list {
@@ -260,6 +281,13 @@ button {
   right: 10px;
   font-size: 1.2em;
   cursor: pointer;
+}
+
+.cart-footer {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid var(--light-grey);
+  text-align: right;
 }
 
 .cart-card__remove:hover {
