@@ -21,6 +21,16 @@ function updateCartTotal() {
   }
 }
 
+function updateCartCount() {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const count = cartItems.length;
+
+  const cartCount = document.querySelector(".cart-count");
+  if (cartCount) {
+    cartCount.textContent = count;
+  }
+}
+
 function removeFromCart(itemIndex) {
   const cartItems = getLocalStorage("so-cart") || [];
   cartItems.splice(itemIndex, 1);
@@ -28,6 +38,7 @@ function removeFromCart(itemIndex) {
 
   cart.init();
   updateCartTotal();
+  updateCartCount();
 }
 
 listElement.addEventListener("click", (e) => {
@@ -37,3 +48,4 @@ listElement.addEventListener("click", (e) => {
 });
 
 updateCartTotal();
+updateCartCount();

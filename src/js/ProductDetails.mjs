@@ -10,30 +10,27 @@ export default class ProductDetails {
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
     this.renderProductDetails();
+
     document
       .getElementById("addToCart")
       .addEventListener("click", this.addProductToCart.bind(this));
   }
 
   addProductToCart() {
-    let cartItems = getLocalStorage('so-cart') || [];
-    const existingItem = cartItems.find(item => item.Id === this.product.Id);
+    let cartItems = getLocalStorage("so-cart") || [];
 
-    if (existingItem) {
-      // If the item already exists in the cart, increment the quantity
-      console.log("This item is already in the cart.");
-    } else {
-      // If the item doesn't exist, add it to the cart
-      cartItems.push(this.product);
-      setLocalStorage("so-cart", cartItems);
+    cartItems.push(this.product);
 
-      const cartCount = document.querySelector(".cart-count");
+    setLocalStorage("so-cart", cartItems);
+
+    this.updateCartCount(cartItems);
+  }
+
+  updateCartCount(cartItems) {
+    const cartCount = document.querySelector(".cart-count");
+    if (cartCount) {
+      cartCount.textContent = cartItems.length;
     }
-    if (cartCount) {cartCount.textContent = cartItems.length
-    } else {
-      console.warn("Cart count element not found");
-    }
-    updateCartCount();
   }
 
   renderProductDetails() {
@@ -42,11 +39,12 @@ export default class ProductDetails {
     <h2 class="divider">${this.product.NameWithoutBrand}</h2>
     <img class="divider" src="${this.product.Images.PrimaryLarge}" alt="${this.product.Name}" />
     <p class="product-card__price">$${this.product.FinalPrice}</p>
-    <p class="product__color">${this.product.Colors[0].ColorName}</p>
+    <p class="product__color">${this.product.Colors?.[0]?.ColorName || "N/A"}</p>
     <p class="product__description">${this.product.DescriptionHtmlSimple}</p>
     <div class="product-detail__add">
-    <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
+      <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
     </div>`;
+
     document.title = `Sleep Outside | ${this.product.Name}`;
   }
 }
