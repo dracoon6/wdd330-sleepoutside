@@ -1,55 +1,51 @@
-import { getLocalStorage, setLocalStorage, loadHeaderFooter } from "./utils.mjs";
+import ShoppingCart from "./ShoppingCart.mjs";
+import { qs, loadHeaderFooter, getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 loadHeaderFooter();
 
-function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
-  const productList = document.querySelector(".product-list");
-  const cartFooter = document.querySelector(".cart-footer");
+const listElement = qs(".product-list");
+const cart = new ShoppingCart(listElement);
+cart.init();
+
+function updateCartTotal() {
+  const cartItems = getLocalStorage("so-cart") || [];
   const cartTotal = document.querySelector(".cart-total");
-  if (cartItems && cartItems.length > 0) {
-    const htmlItems = cartItems.map((item, index) => cartItemTemplate(item, index));
-    productList.innerHTML = htmlItems.join("");
+  const cartFooter = document.querySelector(".cart-footer");
+
+  if (cartItems.length > 0) {
     const total = cartItems.reduce((acc, item) => acc + item.FinalPrice, 0);
-    cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
-    cartFooter.classList.remove("hide");
+    if (cartTotal) cartTotal.innerHTML = `Total: $${total.toFixed(2)}`;
+    if (cartFooter) cartFooter.classList.remove("hide");
   } else {
-    productList.innerHTML = "<li>Your cart is empty.</li>";
-    cartFooter.classList.add("hide");
+    if (cartFooter) cartFooter.classList.add("hide");
   }
 }
 
-function cartItemTemplate(item, index) {
-  const newItem = `<li class="cart-card divider">
-    <span class="cart-card__remove" data-id="${index}">X</span>
-    <a href="#" class="cart-card__image">
-      <img
-        src="${item.Image}"
-        alt="${item.Name}"
-      />
-    </a>
-    <a href="#">
-      <h2 class="card__name">${item.Name}</h2>
-    </a>
-    <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-    <p class="cart-card__quantity">qty: 1</p>
-    <p class="cart-card__price">$${item.FinalPrice}</p>
-  </li>`;
+function updateCartCount() {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const count = cartItems.length;
 
-  return newItem;
+  const cartCount = document.querySelector(".cart-count");
+  if (cartCount) {
+    cartCount.textContent = count;
+  }
 }
 
 function removeFromCart(itemIndex) {
   const cartItems = getLocalStorage("so-cart") || [];
   cartItems.splice(itemIndex, 1);
   setLocalStorage("so-cart", cartItems);
-  renderCartContents();
+
+  cart.init();
+  updateCartTotal();
+  updateCartCount();
 }
 
-document.querySelector(".product-list").addEventListener("click", (e) => {
+listElement.addEventListener("click", (e) => {
   if (e.target.classList.contains("cart-card__remove")) {
     removeFromCart(e.target.dataset.id);
   }
 });
 
-renderCartContents();
+updateCartTotal();
+updateCartCount();
