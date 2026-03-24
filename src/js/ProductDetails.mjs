@@ -16,15 +16,22 @@ export default class ProductDetails {
       .addEventListener("click", this.addProductToCart.bind(this));
   }
 
-  addProductToCart() {
-    let cartItems = getLocalStorage("so-cart") || [];
+addProductToCart() {
+  let cartItems = getLocalStorage("so-cart") || [];
 
+  const existingItem = cartItems.find(item => item.Id === this.product.Id);
+
+  if (existingItem) {
+    existingItem.quantity = (existingItem.quantity || 1) + 1;
+  } else {
+    this.product.quantity = 1;
     cartItems.push(this.product);
-
-    setLocalStorage("so-cart", cartItems);
-
-    this.updateCartCount(cartItems);
   }
+
+  setLocalStorage("so-cart", cartItems);
+
+  this.updateCartCount(cartItems);
+}
 
   updateCartCount(cartItems) {
     const cartCount = document.querySelector(".cart-count");
