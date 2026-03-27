@@ -62,3 +62,12 @@ export async function loadHeaderFooter() {
   headerElement.innerHTML = headerTemplate;
   footerElement.innerHTML = footerTemplate;
 }
+
+export function formDataToJSON(formElement) {
+  const formData = new FormData(formElement);
+  const convertedJSON = {};
+  formData.forEach(function (value, key) {
+    convertedJSON[key] = value;
+  });
+  return convertedJSON;
+}

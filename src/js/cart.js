@@ -47,5 +47,9 @@ listElement.addEventListener("click", (e) => {
   }
 });
 
+qs("#checkoutButton")?.addEventListener("click", () => {
+  window.location.href = "../checkout/index.html";
+});
+
 updateCartTotal();
 updateCartCount();
