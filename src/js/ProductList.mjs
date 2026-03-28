@@ -12,16 +12,33 @@ function productCardTemplate(product) {
 }
 
 export default class ProductList {
-  constructor(category, dataSource, listElement) {
+  constructor(category, dataSource, listElement, search = null) {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
+    this.search = search;
     this.products = [];
     this.originalProducts = []; // Store the original list of products
   }
 
   async init() {
-    this.products = await this.dataSource.getData(this.category);
+    if (this.category) {
+      this.products = await this.dataSource.getData(this.category);
+    } else if (this.search) {
+      const categories = ["tents", "backpacks", "sleeping-bags", "hammocks"];
+      const allCategoryProducts = await Promise.all(
+        categories.map((cat) => this.dataSource.getData(cat))
+      );
+      const flattened = allCategoryProducts.flat();
+
+      const query = this.search.toLowerCase();
+      this.products = flattened.filter(
+        (product) =>
+          (product.Name && product.Name.toLowerCase().includes(query)) ||
+          (product.Brand?.Name && product.Brand.Name.toLowerCase().includes(query)) ||
+          (product.DescriptionHtmlSimple && product.DescriptionHtmlSimple.toLowerCase().includes(query))
+      );
+    }
     this.originalProducts = [...this.products]; // Save a copy of the original order
     this.renderList(this.products);
 
