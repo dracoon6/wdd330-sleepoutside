@@ -1,57 +1,50 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { renderListWithTemplate } from "./utils.mjs";
 
-export default class ProductDetails {
-  constructor(productId, dataSource) {
-    this.productId = productId;
-    this.product = {};
+function productCardTemplate(product) {
+  return `<li class="product-card">
+    <a href="/product_pages/index.html?product=${product.Id}">
+      <img src="${product.Images.PrimaryMedium}" alt="Image of ${product.Name}">
+      <h3 class="card__brand">${product.Brand.Name}</h3>
+      <h2 class="card__name">${product.NameWithoutBrand}</h2>
+      <p class="product-card__price">$${product.FinalPrice}</p>
+    </a>
+  </li>`;
+}
+
+export default class ProductList {
+  constructor(category, dataSource, listElement) {
+    this.category = category;
     this.dataSource = dataSource;
+    this.listElement = listElement;
+    this.products = [];
+    this.originalProducts = []; // Store the original list of products
   }
 
   async init() {
-    this.product = await this.dataSource.findProductById(this.productId);
-    this.renderProductDetails();
+    this.products = await this.dataSource.getData(this.category);
+    this.originalProducts = [...this.products]; // Save a copy of the original order
+    this.renderList(this.products);
 
-    document
-      .getElementById("addToCart")
-      .addEventListener("click", this.addProductToCart.bind(this));
-  }
-
-addProductToCart() {
-  let cartItems = getLocalStorage("so-cart") || [];
-
-  const existingItem = cartItems.find(item => item.Id === this.product.Id);
-
-  if (existingItem) {
-    existingItem.quantity = (existingItem.quantity || 1) + 1;
-  } else {
-    this.product.quantity = 1;
-    cartItems.push(this.product);
-  }
-
-  setLocalStorage("so-cart", cartItems);
-
-  this.updateCartCount(cartItems);
-}
-
-  updateCartCount(cartItems) {
-    const cartCount = document.querySelector(".cart-count");
-    if (cartCount) {
-      cartCount.textContent = cartItems.length;
+    const sortElement = document.querySelector("#product-sort");
+    if (sortElement) {
+      sortElement.addEventListener("change", () => {
+        this.sortList(sortElement.value);
+      });
     }
   }
 
-  renderProductDetails() {
-    document.querySelector(".product-detail").innerHTML = `
-    <h3>${this.product.Brand.Name}</h3>
-    <h2 class="divider">${this.product.NameWithoutBrand}</h2>
-    <img class="divider" src="${this.product.Images.PrimaryLarge}" alt="${this.product.Name}" />
-    <p class="product-card__price">$${this.product.FinalPrice}</p>
-    <p class="product__color">${this.product.Colors?.[0]?.ColorName || "N/A"}</p>
-    <p class="product__description">${this.product.DescriptionHtmlSimple}</p>
-    <div class="product-detail__add">
-      <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
-    </div>`;
+  renderList(list) {
+    renderListWithTemplate(productCardTemplate, this.listElement, list, "afterbegin", true);
+  }
 
-    document.title = `Sleep Outside | ${this.product.Name}`;
+  sortList(criterion) {
+    if (criterion === "name") {
+      this.products.sort((a, b) => a.Name.localeCompare(b.Name));
+    } else if (criterion === "price") {
+      this.products.sort((a, b) => a.FinalPrice - b.FinalPrice);
+    } else { // Handle "Default" or any other unknown criterion
+      this.products = [...this.originalProducts]; // Reset to the original order
+    }
+    this.renderList(this.products);
   }
 }
