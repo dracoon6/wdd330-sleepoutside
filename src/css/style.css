@@ -149,6 +149,46 @@ button {
 
 /* End cart icon styles */
 
+/* Search bar styles */
+.search-bar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+#searchForm {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+}
+
+#searchForm input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--light-grey);
+  border-radius: 4px 0 0 4px;
+}
+
+#searchForm button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0 4px 4px 0;
+  margin: 0; /* Override global button margin */
+}
+
+@media screen and (max-width: 600px) {
+  header {
+    flex-wrap: wrap;
+  }
+  .search-bar {
+    order: 3;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
 .mission {
   position: absolute;
   top: 1rem;
